@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .card {
+            background: linear-gradient(145deg, #ffffff, #f5f5f5);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        h1 {
+            color: #ff6b6b;
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .message {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .personalized-name {
+            font-weight: bold;
+            font-size: 1.3em;
+            color: #5f27cd;
+        }
+        
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .balloon {
+            position: absolute;
+            width: 40px;
+            height: 50px;
+            border-radius: 50%;
+            animation: float 15s ease-in-out infinite;
+            opacity: 0.7;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0); }
+            100% { transform: translateY(-100px) translateX(50px); }
+        }
+        
+        .cake {
+            width: 100px;
+            height: 100px;
+            background-color: #ffd36b;
+            border-radius: 50%;
+            margin: 30px auto;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .cake:hover {
+            transform: scale(1.1);
+        }
+        
+        .cake::before {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 30px;
+            background-color: #ff6b6b;
+            top: -25px;
+            left: 45px;
+            border-radius: 5px;
+        }
+        
+        .cake::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 10px;
+            background-color: #ffaa5b;
+            border-radius: 50%;
+            top: -5px;
+            left: 40px;
+            animation: flame 0.5s infinite alternate;
+        }
+        
+        @keyframes flame {
+            from { transform: scaleY(1); background-color: #ffaa5b; }
+            to { transform: scaleY(1.2); background-color: #ff6b6b; }
+        }
+        
+        .gift {
+            width: 100px;
+            height: 80px;
+            background-color: #5f27cd;
+            margin: 30px auto;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .gift:hover {
+            transform: scale(1.1);
+        }
+        
+        .gift::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 80px;
+            background-color: #ff6b6b;
+            left: 40px;
+            top: 0;
+        }
+        
+        .gift::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 20px;
+            background-color: #ff6b6b;
+            left: 0;
+            top: 30px;
+        }
+        
+        .gift-lid {
+            width: 120px;
+            height: 20px;
+            background-color: #7159c1;
+            position: absolute;
+            top: -20px;
+            left: -10px;
+        }
+        
+        button {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:hover {
+            background-color: #ff4757;
+        }
+        
+        .customization {
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .song-player {
+            margin: 20px 0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .share-link {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9em;
+            word-break: break-all;
+        }
+        
+        .toggle-button {
+            background-color: transparent;
+            color: #5f27cd;
+            box-shadow: none;
+            padding: 5px 10px;
+            font-size: 0.9em;
+        }
+        
+        .celebration-icon {
+            font-size: 2em;
+            margin: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .image-upload {
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="confetti-canvas"></canvas>
+    <div class="container">
+        <div id="editor-view">
+            <h1>Create Your Birthday Card</h1>
+            <div class="customization">
+                <h2>Customize Your Birthday Card</h2>
+                <div>
+                    <label for="recipient-name">Recipient's Name:</label>
+                    <input type="text" id="recipient-name" placeholder="Enter name here">
+                </div>
+                <div>
+                    <label for="sender-name">Your Name:</label>
+                    <input type="text" id="sender-name" placeholder="Your name">
+                </div>
+                <div>
+                    <label for="message-text">Birthday Message:</label>
+                    <textarea id="message-text" placeholder="Write your birthday message here..."></textarea>
+                </div>
+                <div>
+                    <label for="bg-color">Background Color:</label>
+                    <select id="bg-color">
+                        <option value="#f0f8ff">Light Blue</option>
+                        <option value="#fff0f5">Light Pink</option>
+                        <option value="#f5fff0">Light Green</option>
+                        <option value="#fff5f0">Light Orange</option>
+                        <option value="#f0f0ff">Light Purple</option>
+                    </select>
+                </div>
+                <button id="preview-button">Preview Card</button>
+            </div>
+            
+            <div class="customization">
+                <h3>Share Options</h3>
+                <div class="hidden" id="share-section">
+                    <p>Copy this link to share your birthday card:</p>
+                    <div class="share-link" id="share-link">Your link will appear here after preview</div>
+                    <button id="copy-link-button">Copy Link</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="card-view" class="hidden">
+            <div class="card">
+                <h1>Happy Birthday, <span id="card-recipient-name" class="personalized-name">Friend</span>!</h1>
+                <div class="celebration-icon">🎉</div>
+                <div class="celebration-icon">🎂</div>
+                <div class="celebration-icon">🎁</div>
+                
+                <div class="message" id="card-message">
+                    Wishing you the happiest of birthdays filled with joy, laughter, and wonderful surprises!
+                </div>
+                
+                <div class="cake" id="cake"></div>
+                
+                <div class="gift" id="gift">
+                    <div class="gift-lid"></div>
+                </div>
+                
+                <p>With love from,<br><span id="card-sender-name" class="personalized-name">Your Friend</span></p>
+            </div>
+            
+            <button id="back-to-edit-button">Back to Editor</button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize the confetti system
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        const confettiPieces = [];
+        const colors = ['#ff6b6b', '#5f27cd', '#ffd36b', '#4bcffa', '#0be881'];
+        
+        // Set canvas size
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        
+        // Confetti piece constructor
+        function ConfettiPiece(x, y) {
+            this.x = x;
+            this.y = y;
+            this.size = Math.random() * 10 + 5;
+            this.velocity = {
+                x: Math.random() * 6 - 3,
+                y: Math.random() * 3 + 2
+            };
+            this.rotation = Math.random() * 360;
+            this.rotationSpeed = Math.random() * 10 - 5;
+            this.color = colors[Math.floor(Math.random() * colors.length)];
+            this.opacity = 1;
+            this.shapeType = Math.random() > 0.5 ? 'circle' : 'rect';
+        }
+        
+        // Draw confetti piece
+        ConfettiPiece.prototype.draw = function() {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rotation * Math.PI / 180);
+            ctx.globalAlpha = this.opacity;
+            ctx.fillStyle = this.color;
+            
+            if (this.shapeType === 'circle') {
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+            }
+            
+            ctx.restore();
+        };
+        
+        // Update confetti piece position
+        ConfettiPiece.prototype.update = function() {
+            this.x += this.velocity.x;
+            this.y += this.velocity.y;
+            this.rotation += this.rotationSpeed;
+            this.opacity -= 0.01;
+            
+            if (this.y > canvas.height || this.opacity <= 0) {
+                return false;
+            }
+            return true;
+        };
+        
+        // Create confetti burst
+        function createConfettiBurst(x, y, amount = 50) {
+            for (let i = 0; i < amount; i++) {
+                confettiPieces.push(new ConfettiPiece(x, y));
+            }
+        }
+        
+        // Animation loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let i = confettiPieces.length - 1; i >= 0; i--) {
+                const confetti = confettiPieces[i];
+                confetti.draw();
+                const isAlive = confetti.update();
+                if (!isAlive) {
+                    confettiPieces.splice(i, 1);
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+        
+        // Event listeners and page functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const previewButton = document.getElementById('preview-button');
+            const backToEditButton = document.getElementById('back-to-edit-button');
+            const editorView = document.getElementById('editor-view');
+            const cardView = document.getElementById('card-view');
+            const cake = document.getElementById('cake');
+            const gift = document.getElementById('gift');
+            const copyLinkButton = document.getElementById('copy-link-button');
+            const shareSection = document.getElementById('share-section');
+            
+            // Create random balloons
+            function createBalloons() {
+                const balloonColors = ['#ff6b6b', '#5f27cd', '#ffd36b', '#4bcffa', '#0be881'];
+                for (let i = 0; i < 10; i++) {
+                    const balloon = document.createElement('div');
+                    balloon.className = 'balloon';
+                    balloon.style.backgroundColor = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+                    balloon.style.left = `${Math.random() * 100}%`;
+                    balloon.style.animationDelay = `${Math.random() * 5}s`;
+                    balloon.style.animationDuration = `${10 + Math.random() * 15}s`;
+                    document.body.appendChild(balloon);
+                }
+            }
+            
+            createBalloons();
+            
+            // Interactive elements
+            cake.addEventListener('click', function() {
+                createConfettiBurst(
+                    cake.getBoundingClientRect().left + cake.offsetWidth / 2,
+                    cake.getBoundingClientRect().top + cake.offsetHeight / 2
+                );
+            });
+            
+            gift.addEventListener('click', function() {
+                createConfettiBurst(
+                    gift.getBoundingClientRect().left + gift.offsetWidth / 2,
+                    gift.getBoundingClientRect().top + gift.offsetHeight / 2
+                );
+            });
+            
+            // Preview button
+            previewButton.addEventListener('click', function() {
+                const recipientName = document.getElementById('recipient-name').value || 'Friend';
+                const senderName = document.getElementById('sender-name').value || 'Your Friend';
+                const message = document.getElementById('message-text').value || 'Wishing you the happiest of birthdays filled with joy, laughter, and wonderful surprises!';
+                const bgColor = document.getElementById('bg-color').value;
+                
+                // Update the card
+                document.getElementById('card-recipient-name').textContent = recipientName;
+                document.getElementById('card-sender-name').textContent = senderName;
+                document.getElementById('card-message').textContent = message;
+                document.body.style.backgroundColor = bgColor;
+                
+                // Switch views
+                editorView.classList.add('hidden');
+                cardView.classList.remove('hidden');
+                
+                // Create confetti burst at the center of the screen
+                createConfettiBurst(window.innerWidth / 2, window.innerHeight / 2, 100);
+                
+                // Generate share link
+                const shareParams = new URLSearchParams();
+                shareParams.append('recipient', recipientName);
+                shareParams.append('sender', senderName);
+                shareParams.append('message', message);
+                shareParams.append('bgcolor', bgColor);
+                
+                const shareLink = `${window.location.href.split('?')[0]}?${shareParams.toString()}`;
+                document.getElementById('share-link').textContent = shareLink;
+                shareSection.classList.remove('hidden');
+            });
+            
+            // Back to edit button
+            backToEditButton.addEventListener('click', function() {
+                cardView.classList.add('hidden');
+                editorView.classList.remove('hidden');
+            });
+            
+            // Copy link button
+            copyLinkButton.addEventListener('click', function() {
+                const shareLink = document.getElementById('share-link').textContent;
+                navigator.clipboard.writeText(shareLink).then(function() {
+                    copyLinkButton.textContent = 'Copied!';
+                    setTimeout(function() {
+                        copyLinkButton.textContent = 'Copy Link';
+                    }, 2000);
+                });
+            });
+            
+            // Check for URL parameters to load a shared card
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('recipient')) {
+                const recipientName = urlParams.get('recipient');
+                const senderName = urlParams.get('sender');
+                const message = urlParams.get('message');
+                const bgColor = urlParams.get('bgcolor');
+                
+                // Update the card
+                document.getElementById('card-recipient-name').textContent = recipientName;
+                document.getElementById('card-sender-name').textContent = senderName;
+                document.getElementById('card-message').textContent = message;
+                document.body.style.backgroundColor = bgColor;
+                
+                // Show the card view directly
+                editorView.classList.add('hidden');
+                cardView.classList.remove('hidden');
+                
+                // Create confetti burst
+                createConfettiBurst(window.innerWidth / 2, window.innerHeight / 2, 100);
+            }
+        });
+    </script>
+</body>
+</html>
